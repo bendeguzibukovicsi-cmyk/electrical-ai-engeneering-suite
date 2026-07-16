@@ -144,7 +144,7 @@ class ElectricalEngineeringAgent:
                 "voltage_rating": "16V",
                 "stock": [
                     {"supplier": "Digi-Key", "quantity": 8000, "price": 0.005},
-                    {"supplier": "Mouser": "quantity", "quantity": 6000, "price": 0.006}
+                    {"supplier": "Mouser", "quantity": 6000, "price": 0.006}
                 ]
             }
         ]
