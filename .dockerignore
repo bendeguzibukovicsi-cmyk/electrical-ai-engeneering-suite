@@ -1,0 +1,41 @@
+.dockerignore:
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+__pycache__/
+
+# Build
+build/
+dist/
+.next/
+
+# Tests
+.pytest_cache/
+.coverage
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+DOCS/
+
+# Uploads
+uploads/
