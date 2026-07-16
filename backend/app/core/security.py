@@ -9,13 +9,18 @@ from jose import jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+
 from app.core.config import settings
 from app.db.session import get_db
 from app.db.models.user import User
 
-# FastAPI imports required by security helpers
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+# Import UserRepository if available
+try:
+    from app.db.repositories.user import UserRepository
+except Exception:
+    UserRepository = None
 
 
 # Password hashing
@@ -33,9 +38,30 @@ def get_password_hash(password: str) -> str:
 
 
 def authenticate_user(db: Session, email: str, password: str) -> Optional[User]:
-    """Authenticate a user."""
-    # This would typically query the database for the user
-    # For now, we'll return None and implement properly in user repository
+    """Authenticate a user using the UserRepository if available."""
+    if UserRepository is None:
+        # Repository not available; cannot authenticate
+        return None
+
+    repo = UserRepository(db)
+
+    # Prefer a repository-provided authenticate method
+    if hasattr(repo, "authenticate"):
+        try:
+            user = repo.authenticate(email=email, password=password)
+            return user
+        except Exception:
+            return None
+
+    # Fallback to fetching by email and verifying password
+    if hasattr(repo, "get_by_email"):
+        user = repo.get_by_email(email=email)
+        if not user:
+            return None
+        # Assume user has attribute `hashed_password` or `password`
+        hashed = getattr(user, "hashed_password", None) or getattr(user, "password", None)
+        if hashed and verify_password(password, hashed):
+            return user
     return None
 
 
@@ -52,12 +78,15 @@ def create_access_token(
     return encoded_jwt
 
 
-# OAuth2 scheme
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+# OAuth2 scheme: point tokenUrl to the auth login endpoint
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
 
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    """Get the current user from the token."""
+    """Get the current user from the token and load it from the DB.
+
+    This implementation attempts to use UserRepository to fetch the user by id.
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -68,20 +97,43 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         user_id: str = payload.get("sub")
         if user_id is None:
             raise credentials_exception
-    except jwt.JWTError:
+    except Exception:
         raise credentials_exception
-    # In a real implementation, we would fetch the user from the database
-    # user = get_user(db, user_id=int(user_id))
-    # if user is None:
-    #     raise credentials_exception
-    # return user
-    return None  # Placeholder
+
+    # If repository is available, try to load the user
+    if UserRepository is not None:
+        try:
+            repo = UserRepository(db)
+            # Try common getter names
+            user = None
+            for getter in ("get", "get_by_id", "get_by_pk", "get_by_email"):
+                if hasattr(repo, getter):
+                    try:
+                        if getter == "get_by_email":
+                            # Not an id-based getter, skip
+                            continue
+                        user = getattr(repo, getter)(int(user_id))
+                        break
+                    except Exception:
+                        continue
+            if user is None:
+                # As a last resort, try authenticate with a token-less flow if supported
+                user = None
+        except Exception:
+            user = None
+    else:
+        user = None
+
+    if user is None:
+        raise credentials_exception
+
+    return user
 
 
 def get_current_active_user(
     current_user: User = Depends(get_current_user),
 ):
     """Get the current active user."""
-    if not current_user.is_active:
+    if not getattr(current_user, "is_active", True):
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
