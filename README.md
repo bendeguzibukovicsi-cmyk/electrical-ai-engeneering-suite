@@ -42,8 +42,7 @@ cd electrical-ai-engineering-suite
 
 2. Set up environment variables:
 ```bash
-cp .env.example .env
-# Edit .env with your configuration
+git clone https://github.com/bendeguzibukovicsi-cmyk/electrical-ai-engeneering-suite.git
 ```
 
 3. Start the services:
