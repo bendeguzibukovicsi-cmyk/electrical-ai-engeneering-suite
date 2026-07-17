@@ -1,3 +1,4 @@
+Markdown
 # Electrical AI Engineering Suite
 
 A production-ready, open-source platform for electrical engineering design, simulation, analysis, debugging, and documentation.
@@ -46,3 +47,73 @@ Ensure you have the following installed on your machine and that ports **5432**,
 ```bash
 git clone [https://github.com/bendeguzibukovicsi-cmyk/electrical-ai-engineering-suite.git](https://github.com/bendeguzibukovicsi-cmyk/electrical-ai-engineering-suite.git)
 cd electrical-ai-engineering-suite
+2. Set up environment variables:
+
+Bash
+cp .env.example .env
+(Note: Open the .env file and populate it with your specific API keys, such as OpenAI/Claude, and database credentials.)
+
+3. Start the infrastructure (Database & Redis):
+
+Bash
+docker-compose up -d
+4. Run Backend Migrations (if applicable):
+
+Bash
+# Assuming you use Alembic for SQLAlchemy migrations
+alembic upgrade head
+5. Install frontend dependencies:
+
+Bash
+cd frontend
+npm install
+6. Start the development server:
+
+Bash
+npm run dev
+Testing
+To ensure everything is working correctly, you can run the test suites:
+
+Backend Tests:
+
+Bash
+pytest
+Frontend End-to-End Tests:
+
+Bash
+cd frontend
+npx playwright test
+Architecture
+The system follows a microservices architecture with:
+
+API Gateway for routing.
+
+Authentication Service for secure access.
+
+Individual services for each AI agent.
+
+Shared database and caching layers.
+
+Event-driven communication via Redis.
+
+Documentation
+API Documentation
+
+Architecture Overview
+
+Development Guide
+
+Deployment Guide
+
+User Guide
+
+(Note: If these documentation files are not created yet, consider this a roadmap for future documentation.)
+
+Contributing
+We welcome contributions! Please see our Contributing Guide for details.
+
+License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+Contact
+For questions and support, please open an issue on GitHub.
