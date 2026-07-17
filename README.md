@@ -1,4 +1,5 @@
-Markdown
+
+```markdown
 # Electrical AI Engineering Suite
 
 A production-ready, open-source platform for electrical engineering design, simulation, analysis, debugging, and documentation.
@@ -47,73 +48,107 @@ Ensure you have the following installed on your machine and that ports **5432**,
 ```bash
 git clone [https://github.com/bendeguzibukovicsi-cmyk/electrical-ai-engineering-suite.git](https://github.com/bendeguzibukovicsi-cmyk/electrical-ai-engineering-suite.git)
 cd electrical-ai-engineering-suite
-2. Set up environment variables:
 
-Bash
+```
+
+**2. Set up environment variables:**
+
+```bash
 cp .env.example .env
-(Note: Open the .env file and populate it with your specific API keys, such as OpenAI/Claude, and database credentials.)
 
-3. Start the infrastructure (Database & Redis):
+```
 
-Bash
+*(Note: Open the `.env` file and populate it with your specific API keys, such as OpenAI/Claude, and database credentials.)*
+
+**3. Start the infrastructure (Database & Redis):**
+
+```bash
 docker-compose up -d
-4. Run Backend Migrations (if applicable):
 
-Bash
+```
+
+**4. Run Backend Migrations (if applicable):**
+
+```bash
 # Assuming you use Alembic for SQLAlchemy migrations
 alembic upgrade head
-5. Install frontend dependencies:
 
-Bash
+```
+
+**5. Install frontend dependencies:**
+
+```bash
 cd frontend
 npm install
-6. Start the development server:
 
-Bash
+```
+
+**6. Start the development server:**
+
+```bash
 npm run dev
-Testing
+
+```
+
+---
+
+## Testing
+
 To ensure everything is working correctly, you can run the test suites:
 
-Backend Tests:
+**Backend Tests:**
 
-Bash
+```bash
 pytest
-Frontend End-to-End Tests:
 
-Bash
+```
+
+**Frontend End-to-End Tests:**
+
+```bash
 cd frontend
 npx playwright test
-Architecture
+
+```
+
+---
+
+## Architecture
+
 The system follows a microservices architecture with:
 
-API Gateway for routing.
+* **API Gateway** for routing.
+* **Authentication Service** for secure access.
+* **Individual services** for each AI agent.
+* **Shared database** and caching layers.
+* **Event-driven communication** via Redis.
 
-Authentication Service for secure access.
+---
 
-Individual services for each AI agent.
+## Documentation
 
-Shared database and caching layers.
+* [API Documentation](https://www.google.com/search?q=./docs/api.md)
+* [Architecture Overview](https://www.google.com/search?q=./docs/architecture.md)
+* [Development Guide](https://www.google.com/search?q=./docs/development.md)
+* [Deployment Guide](https://www.google.com/search?q=./docs/deployment.md)
+* [User Guide](https://www.google.com/search?q=./docs/user-guide.md)
 
-Event-driven communication via Redis.
+*(Note: If these documentation files are not created yet, consider this a roadmap for future documentation.)*
 
-Documentation
-API Documentation
+---
 
-Architecture Overview
+## Contributing
 
-Development Guide
+We welcome contributions! Please see our [Contributing Guide](https://www.google.com/search?q=./CONTRIBUTING.md) for details.
 
-Deployment Guide
+## License
 
-User Guide
+This project is licensed under the MIT License - see the [LICENSE](https://www.google.com/search?q=./LICENSE) file for details.
 
-(Note: If these documentation files are not created yet, consider this a roadmap for future documentation.)
+## Contact
 
-Contributing
-We welcome contributions! Please see our Contributing Guide for details.
-
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-Contact
 For questions and support, please open an issue on GitHub.
+
+```
+
+```
